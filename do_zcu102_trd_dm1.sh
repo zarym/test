@@ -3,11 +3,12 @@
 ## FIX THIS to point to your unzip'd TRD directory
 #TRD_HOME=${PWD}/../rdf0421-zcu102-base-trd-2018-2
 # Correct the path accordingly
-TRD_HOME=/home/zary/zcu102/rdf0421-zcu102-base-trd-2018-2
+#TRD_HOME=/home/zary/zcu102/rdf0421-zcu102-base-trd-2018-2
+HW_DIR=${PWD}/hw
 
 ## FIX THIS to point to your petalinux install directory
-##PETALINUX_DIR=/raid/xilinx/petalinux/2018.2
-PETALINUX_DIR=/home/zary/PetaLinux
+PETALINUX_DIR=/raid/xilinx/petalinux/2017.1
+## PETALINUX_DIR=/home/zary/PetaLinux
 
 #### https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841801/Zynq+UltraScale+MPSoC+Base+TRD+2018.2+-+Design+Module+1
 ####     
@@ -25,8 +26,20 @@ PETALINUX_DIR=/home/zary/PetaLinux
 # created project including libiio already in github
 #petalinux-create -t project -s xilinx-zcu102-v2017.1-final.bsp -n bsp
 
-## step 3 - run the config
-( cd bsp && petalinux-config --get-hw-description=${TRD_HOME}/zcu102_base_trd/sw/a53_linux/a53_linux/prebuilt --oldconfig )
+## step 2.1 - fixup CONFIG_TMP_DIR_LOCATION.  This is a known-problem with using
+## petalinux config files checked into version control systems:
+## https://forums.xilinx.com/t5/Embedded-Linux/Absolute-path-in-config-file/td-p/776685
+##
+( 
+#    cd bsp 
+    SUFFIX=$$
+    cp bsp/project-spec/configs/config bsp/project-spec/configs/config.old.${SUFFIX}
+    sed -e s:CONFIG_TMP_DIR_LOCATION.*:CONFIG_TMP_DIR_LOCATION=\"${PWD}/bsp/build/tmp/\": bsp/project-spec/configs/config > bsp/project-spec/configs/config.${SUFFIX}
+    cp bsp/project-spec/configs/config.${SUFFIX} bsp/project-spec/configs/config 
+)
 
-## step 4 - run settings again as 
-petalinux-build
+## step 3 - run the config
+( cd bsp && petalinux-config --get-hw-description=${HW_DIR} --oldconfig )
+
+## step 4 - build the project
+(cd bsp && petalinux-build )
