@@ -4429,6 +4429,7 @@ CONFIG_bridge-utils=y
 # user packages 
 #
 CONFIG_libiio=y
+CONFIG_libiio-iiod=y
 
 #
 # PetaLinux RootFS Settings
