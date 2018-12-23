@@ -4428,8 +4428,11 @@ CONFIG_bridge-utils=y
 #
 # user packages 
 #
+CONFIG_libad9361-iio=y
 CONFIG_libiio=y
 CONFIG_libiio-iiod=y
+CONFIG_iw_4.7=y
+CONFIG_wpa-supplicant_2.5=y
 
 #
 # PetaLinux RootFS Settings
